@@ -1,0 +1,70 @@
+﻿@model List<IMS.Models.tblVehicle>
+@{
+    Layout = null;
+}
+
+<div>
+    <table id="tblvehicle" class="table table-bordered" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th class="hidden">ID</th>
+                <th width="80%">Vehicle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="hidden vehicleid">@Html.DisplayFor(modelItem => item.VehicleID)</td>
+                        <td class="vehiclename">@Html.DisplayFor(modelItem => item.VehicleNo)</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" onclick="Editvehicle(@item.VehicleID, '@item.VehicleNo')"><spam class="fas fa-edit"></spam></a>
+                            <a class="btn btn-primary btn-sm" onclick="deletevehicle(@item.VehicleID)"><spam class="fas fa-trash"></spam></a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tblvehicle').DataTable({
+            //pageLength: 5
+        });
+    });
+
+    function Editvehicle(vehicleid, vehicleno) {
+        $("#hdnvehicleId").val(vehicleid);
+        $("#txtVehicle").val(vehicleno);
+    }
+
+    function deletevehicle(id) {
+        if (confirm("Do you want to Delete?") == true) {
+            $.ajax({
+                url: '@Url.Action("DeleteVehicle", "Home")',
+                data: { VID: id },
+                dataType: "json",
+                type: "POST",
+                success: function (data) {
+                    if (data.Key) {
+                        toastr.success(data.Value);
+                        window.setTimeout('window.location.href = "@Url.Action("Index", "Home")"', 2000);
+                    }
+                    else {
+                        toastr.warning(data.Value);
+                    }
+                },
+                error: function (xhr) {
+                }
+            });
+        }
+        else {
+            userPreference = "Cancelled!";
+        }
+    }
+</script>

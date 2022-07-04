@@ -1,0 +1,244 @@
+﻿@model IEnumerable<IMS.Models.tblProject>
+@{
+    ViewBag.Title = "Project";
+}
+
+<input type="hidden" id="hdnProjectId" name="hdnProjectId" value="0">
+<input type="hidden" id="hdnvehicleId" name="hdnvehicleId" value="0">
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+
+    <div class="card-header py-4">
+        <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+        <button type="button" id="btnOpen" data-toggle="modal" data-target="#FormModel" style="float: right; margin-top: -30px;"
+                class="btn btn-success">
+            <span class="glyphicon glyphicon-plus"></span> Add New
+        </button>
+    </div>
+
+    <div class="card-body">
+        <div class="">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="hidden">ID</th>
+                        <th width="80%">Project</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="hidden">@Html.DisplayFor(modelItem => item.ID)</td>
+                                <td class="name">@Html.DisplayFor(modelItem => item.Project)</td>
+                                <td>
+                                    <a class="btn btn-primary btn-sm" onclick="deleteproject(@item.ID)"><spam class="fas fa-trash"></spam></a>
+                                    <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#FormModel" onclick="EditRole(@item.ID)"><spam class="fas fa-edit"></spam></a>
+                                    <a href="@Url.Action("ShowGrid","Home", new { ProjectId = item.ID})" class="btn btn-primary btn-sm"><spam class="fas fa-upload"></spam></a>
+                                    <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#VehicleModel" onclick="AddVehicle(@item.ID)"><spam class="fas fa-truck "></spam></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="divFormModel" class="row">
+
+    <div class="modal fade" id="FormModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Project</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding:5px;">
+                        <span class="CustomLabel">Name</span>
+                        @Html.TextBox("Project", "", new { id = "txtProject", @class = "form-control require", @maxlength = "100" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="button" onclick="CloseModel();" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-success" id="btnSubmit" type="button" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="VehicleModel" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Vehicles</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" style="padding:5px;">
+                        <input type="hidden" id="projectid" value="" />
+                        <span class="CustomLabel">Vehicle No</span>
+                        @Html.TextBox("Vehicle", "", new { id = "txtVehicle", @class = "form-control require", @maxlength = "100" })
+                    </div>
+                    <div class="row" style="padding:10px;">
+                        <button class="btn btn-success" id="btnSave" type="button" data-dismiss="modal" style="margin-right:10px;">Save</button>
+                        <button class="btn btn-danger" type="button" onclick="CloseModel();" data-dismiss="modal">Cancel</button>
+                    </div>
+                    <hr/>
+                    <div class="row" style="padding:10px;">
+                        <div id="DisplayVehicleData"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#dataTable').DataTable();
+
+        CloseModel();
+        ClsModel();
+
+        $("#btnSubmit").click(function () {
+            var project = $("#txtProject").val();
+
+            if (project) {
+                $.ajax({
+                    url: '@Url.Action("AddProject", "Home")',
+                    data: { ID: $("#hdnProjectId").val(), Project: project},
+                    dataType: "json",
+                    type: "POST",
+                    success: function (data) {
+                        if (data.Key) {
+                            toastr.success(data.Value);
+                            window.setTimeout('window.location.href = "@Url.Action("Index", "Home")"', 2000);
+                        }
+                        else {
+                            toastr.warning(data.Value);
+                        }
+                    },
+                    error: function (xhr) {
+                    }
+                });
+            }
+            else {
+                toastr.warning('All feilds are mandatory');
+            }
+        });
+
+        $("#btnSave").click(function () {
+            var vehicle = $("#txtVehicle").val();
+
+            if (vehicle) {
+                $.ajax({
+                    url: '@Url.Action("AddVehicle", "Home")',
+                    data: { VID: $("#hdnvehicleId").val(), PID: $("#projectid").val(), Vehicle: vehicle},
+                    dataType: "json",
+                    type: "POST",
+                    success: function (data) {
+                        if (data.Key) {
+                            toastr.success(data.Value);
+                            window.setTimeout('window.location.href = "@Url.Action("Index", "Home")"', 2000);
+                        }
+                        else {
+                            toastr.warning(data.Value);
+                        }
+                    },
+                    error: function (xhr) {
+                    }
+                });
+            }
+            else {
+                toastr.warning('All feilds are mandatory');
+            }
+        });
+
+    });
+
+    function EditRole(ID) {
+        CloseModel();
+        $.ajax({
+            url: '@Url.Action("GetProjectDetails", "Home")',
+            dataType: "json",
+            type: "POST",
+            data: { ID: ID },
+            success: function (result) {
+                if (result.Key) {
+                    $("#hdnProjectId").val(result.data.ID);
+                    $("#txtProject").val(result.data.Project);
+                }
+                else {
+                    CloseModel()
+                }
+            }
+        });
+
+    }
+
+    function AddVehicle(ID) {
+        ClsModel();
+        $("#projectid").val(ID);
+        $.ajax({
+            url: '@Url.Action("DisplyVehicleDetails", "Home")',
+            type: "POST",
+            dataType:"html",
+            data: { PID: ID },
+            success: function (result) {
+                $("#DisplayVehicleData").html(result);
+            }
+        });
+    }
+
+    function deleteproject(id) {
+        if (confirm("Do you want to Delete?") == true) {
+            $.ajax({
+                url: '@Url.Action("DeleteProject", "Home")',
+                data: { PID: id },
+                dataType: "json",
+                type: "POST",
+                success: function (data) {
+                    if (data.Key) {
+                        toastr.success(data.Value);
+                        window.setTimeout('window.location.href = "@Url.Action("Index", "Home")"', 2000);
+                    }
+                    else {
+                        toastr.warning(data.Value);
+                    }
+                },
+                error: function (xhr) {
+                }
+            });
+        }
+        else {
+            userPreference = "Cancelled!";
+        }
+    }
+
+
+
+    function CloseModel() {
+        $("#hdnProjectId").val("0");
+        $("#txtProject").val("");
+    }
+
+    function ClsModel() {
+        $("#projectid").val("");
+        $("#txtVehicle").val("");
+    }
+
+</script>
