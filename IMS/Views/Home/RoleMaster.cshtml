@@ -16,7 +16,7 @@
     </div>
     <div class="card-body">
         <div class="">
-            <table id="example" class="table table-bordered  dataTable" width="100%" cellspacing="0">
+            <table id="dataTable" class="table table-bordered table-responsive" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th class="hidden">RoleId</th>
@@ -37,8 +37,8 @@
                                 <td class="name">@Html.DisplayFor(modelItem => item.UserName)</td>
                                 <td class="name">@Html.DisplayFor(modelItem => item.Role)</td>
                                 <td>
-                                    <a class="btn btn-primary btn-sm" onclick="deleterole(@item.RoleId)"><spam class="fas fa-trash"></spam></a>
-                                    <a class="btn btn-primary btn-sm" data-toggle="modal" data-target="#FormModel" onclick="EditRole(@item.RoleId)"><spam class="fas fa-edit"></spam></a>
+                                    <a class="" onclick="deleterole(@item.RoleId)"><spam class="fas fa-trash"></spam></a>
+                                    <a class="" data-toggle="modal" data-target="#FormModel" onclick="EditRole(@item.RoleId)"><spam class="fas fa-edit"></spam></a>
                                 </td>
                             </tr>
                         }
@@ -88,15 +88,13 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $(document).ready(function () {
-            $('#example').DataTable();
-        });
+        $('#dataTable').DataTable();
 
         CloseModel();
 
         arrayRoles = @Html.Raw(Json.Encode(@ViewBag.Roles));
 
-        $("body").on("click", "[id*=example] .Edit", function () {
+        $("body").on("click", "[id*=dataTable] .Edit", function () {
             var row = $(this).closest("tr");
             var psno = row.find(".psno");
             var role = row.find(".role1");

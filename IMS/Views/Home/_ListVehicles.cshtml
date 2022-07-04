@@ -4,7 +4,7 @@
 }
 
 <div>
-    <table id="tblvehicle" class="table table-bordered" width="100%" cellspacing="0">
+    <table id="tblvehicle" class="table table-bordered " width="100%" cellspacing="0">
         <thead>
             <tr>
                 <th class="hidden">ID</th>
@@ -21,8 +21,8 @@
                         <td class="hidden vehicleid">@Html.DisplayFor(modelItem => item.VehicleID)</td>
                         <td class="vehiclename">@Html.DisplayFor(modelItem => item.VehicleNo)</td>
                         <td>
-                            <a class="btn btn-primary btn-sm" onclick="Editvehicle(@item.VehicleID, '@item.VehicleNo')"><spam class="fas fa-edit"></spam></a>
-                            <a class="btn btn-primary btn-sm" onclick="deletevehicle(@item.VehicleID)"><spam class="fas fa-trash"></spam></a>
+                            <a class="" onclick="Editvehicle(@item.VehicleID, '@item.VehicleNo')"><spam class="fas fa-edit"></spam></a>
+                            <a class="" onclick="deletevehicle(@item.VehicleID)"><spam class="fas fa-trash"></spam></a>
                         </td>
                     </tr>
                 }
