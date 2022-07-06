@@ -1908,6 +1908,7 @@
     <Content Include="Content\startbootstrap\vendor\jquery\jquery.min.js" />
     <Content Include="Content\startbootstrap\vendor\jquery\jquery.slim.js" />
     <Content Include="Content\startbootstrap\vendor\jquery\jquery.slim.min.js" />
+    <Content Include="dbchanges.sql" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
