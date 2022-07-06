@@ -36,7 +36,7 @@ namespace IMS.Controllers
                     objClsLoginInfo.UserName = obj.UserName;
                     objClsLoginInfo.RoleName = GetRole(obj.UserName);
                     Session[clsEnum.Session.LoginInfo] = objClsLoginInfo;
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Dashboard");
                 }
             }
             return View(objUser);
@@ -499,8 +499,8 @@ namespace IMS.Controllers
         public ActionResult Dashboard()
         {
             var Countlst = db.GetProjectItemCount().ToList();
-            ViewBag.Projects = db.tblProjects.Count();
-            ViewBag.Vehicles = db.tblVehicles.Count();
+            //ViewBag.Projects = db.tblProjects.Count();
+            //ViewBag.Vehicles = db.tblVehicles.Count();
             return View(Countlst);
         }
 
