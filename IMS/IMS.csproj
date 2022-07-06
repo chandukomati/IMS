@@ -2177,6 +2177,7 @@
     <Content Include="Views\Home\ShowGrid.cshtml" />
     <Content Include="Views\ScanQRCode\Index.cshtml" />
     <Content Include="Views\ScanQRCode\OpenQRScanner.cshtml" />
+    <Content Include="Views\ScanQRCode\ItemScanner.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

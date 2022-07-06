@@ -8,6 +8,7 @@ using IMS.Models;
 using System.Data;
 using ClosedXML.Excel;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace IMS.Controllers
 {
@@ -15,12 +16,11 @@ namespace IMS.Controllers
     {
         ImsDBEntities db = new ImsDBEntities();
         // GET: ScanQRCode
+        [SessionExpireFilter]
         public ActionResult Index()
         {
             ViewBag.Project = db.tblProjects.Select(x => x.Project).ToList(); 
             List<string> VehicleNo = new List<string>();
-            VehicleNo.Add("GJ1");
-            VehicleNo.Add("GJ5");
             ViewBag.VehicleNo = VehicleNo;
             return View();
         }
@@ -37,10 +37,16 @@ namespace IMS.Controllers
         public ActionResult QRCodeResult(string Proj, string VNo, string text)
         {
             ViewBag.Project = db.tblProjects.Select(x => x.Project).ToList();
-            List<string> VehicleNo = new List<string>();
-            VehicleNo.Add("GJ1");
-            VehicleNo.Add("GJ5");
-            ViewBag.VehicleNo = VehicleNo;
+            var objProject = db.tblProjects.Where(x => x.Project == Proj).FirstOrDefault();
+            if (objProject != null)
+            {
+                var ProjectID = objProject.ID;
+                ViewBag.VehicleNo = db.tblVehicles.Where(x => x.ProjectID == ProjectID).Select(x => x.VehicleNo).ToList();
+            }
+            else {
+                List<string> VehicleNo = new List<string>();
+                ViewBag.VehicleNo = VehicleNo;
+            }
             ViewBag.Proj = Proj;
             ViewBag.VNo = VNo;
             ViewBag.Item = text;
@@ -55,9 +61,8 @@ namespace IMS.Controllers
             if (projData != null)
             {
                 int projID = projData.ID;
-                var markNo = Item.Split('~')[0];
-                var batch = Item.Split('~')[1];
-                var ItemData = db.tblTGBuxars.Where(x => x.ProjectId == projID && x.MarkNo == markNo && x.Batch == batch).FirstOrDefault();
+                var batch = Item;
+                var ItemData = db.tblTGBuxars.Where(x => x.ProjectId == projID && x.Batch == batch).FirstOrDefault();
                 objresponse.Key = true;
                 objresponse.data = ItemData;
             }
@@ -83,6 +88,21 @@ namespace IMS.Controllers
             return Json(objresponse, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult GetVehicleByProject(string Project)
+        {
+            VehicleResponseMsg objresponse = new VehicleResponseMsg();
+            objresponse.Key = false;
+            var objProject = db.tblProjects.Where(x => x.Project == Project).FirstOrDefault();
+            if (objProject != null)
+            {
+                var ProjectID = objProject.ID;
+                var Data = db.tblVehicles.Where(x => x.ProjectID == ProjectID).ToList();
+                objresponse.Key = true;
+                objresponse.data = Data; 
+            }
+            return Json(objresponse, JsonRequestBehavior.AllowGet);
+        }
         public class ItemResponseMsg
         {
             public ItemResponseMsg()
@@ -91,6 +111,39 @@ namespace IMS.Controllers
             }
             public bool Key;
             public tblTGBuxar data;
+        }
+        public class VehicleResponseMsg
+        {
+            public VehicleResponseMsg()
+            {
+                new tblVehicle();
+            }
+            public bool Key;
+            public List<tblVehicle> data;
+        }
+        #endregion
+
+        #region Only Scan Item      
+        [SessionExpireFilter]
+        public ActionResult ItemScanner()
+        {
+            return View();
+        }
+        [SessionExpireFilter]
+        public ActionResult ItemQRCodeResult(string text)
+        {
+            ViewBag.Item = text;
+            return View("ItemScanner");
+        }
+        [HttpPost]
+        public JsonResult GetItemDetails(string Item)
+        {
+            ItemResponseMsg objresponse = new ItemResponseMsg();
+            objresponse.Key = false;
+            var ItemData = db.tblTGBuxars.Where(x => x.Batch == Item).FirstOrDefault();
+            objresponse.Key = true;
+            objresponse.data = ItemData;
+            return Json(objresponse, JsonRequestBehavior.AllowGet);
         }
         #endregion
     }

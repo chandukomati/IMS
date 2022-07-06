@@ -84,9 +84,14 @@ window.addEventListener('DOMContentLoaded', function () {
             navigator.vibrate(200);
             disableUI();
             //cameraScanResult(resultData);
-            window.location.href = (baseurl + "/ScanQRCode/QRCodeResult?Proj=" + Project + "&VNo=" + VehicleNo +"&text=" + resultData);
-            
+            if (Project != null && Project != "") {
+                window.location.href = (baseurl + "/ScanQRCode/QRCodeResult?Proj=" + Project + "&VNo=" + VehicleNo + "&text=" + resultData);
+            }
+            else {
+                window.location.href = (baseurl + "/ScanQRCode/ItemQRCodeResult?text=" + resultData);
+            }
             return;
+
             try {
                 url = new URL(resultData);
                 let linkToResult = document.createElement('a');

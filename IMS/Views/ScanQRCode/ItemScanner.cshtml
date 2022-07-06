@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewBag.Title = "Scan QR Code";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-4">
+        <h6 class="m-0 font-weight-bold text-primary">Item Scan by QR Code</h6>
+    </div>
+    <div class="card-body">
+        <div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Scan Item</span>
+                </div>
+                <div class="col-lg-6">
+                    @Html.TextBox("txtItemNo", null, new { id = "txtItemNo", @class = "form-control" })
+                </div>
+                <div class="col-lg-4">
+                    <button type="button" id="btnOpen" class="btn btn-success" onclick="ScanQRCode()">
+                        <span class="glyphicon glyphicon-qrcode"></span> Item Scan
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row ItemDetails hidden">
+            <hr />
+            <br />
+            <div class="row">
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Drawing No</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="DrawingNo"></span>
+                </div>
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Mark No</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="MarkNo"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Batch</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="Batch"></span>
+                </div>
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Part Serial No</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="PartSerialNo"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Unit WT</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="UnitWT"></span>
+                </div>
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Is Loaded</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="IsApprove"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Vehicle No</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="VehicleNo"></span>
+                </div>
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Approved By</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="ApprovedBy"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    <span class="CustomLabel">Approved On</span>
+                </div>
+                <div class="col-lg-4">
+                    <span class="ApprovedOn"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function ScanQRCode() {
+        var url = "/ScanQRCode/OpenQRScanner";
+        window.location.href = url;
+    }
+    var ResultItem = '@ViewBag.Item'
+    if (ResultItem != "") {
+        $("#txtItemNo").val(ResultItem);
+        GetItemDetails(ResultItem);
+    }
+    function GetItemDetails(Item) {
+        $.ajax({
+            url: '@Url.Action("GetItemDetails", "ScanQRCode")',
+            dataType: "json",
+            type: "POST",
+            data: { Item: Item },
+            success: function (result) {
+                if (result.Key) {
+                    $(".ItemDetails").show();
+                    var data = result.data;
+                    $(".DrawingNo").text(data.DrawingNo);
+                    $(".MarkNo").text(data.MarkNo);
+                    $(".Batch").text(data.Batch);
+                    $(".PartSerialNo").text(data.PartSerialNo);
+                    $(".UnitWT").text(data.UnitWT);
+                    if (data.IsApprove == true) {
+                        $(".IsApprove").text('Yes');
+                    }
+                    else {
+                        $(".IsApprove").text('No');
+                    }
+                    $(".VehicleNo").text(data.VehicleNo);
+                    $(".ApprovedBy").text(data.ApprovedBy);
+                    $(".ApprovedOn").text(formattedDateFromJson(data.ApprovedOn));
+                }
+            }
+        });
+    }
+    function formattedDateFromJson(jsonDate) {
+        var d = new Date(parseInt(jsonDate.substr(6)));
+        return ("0" + d.getDate()).slice(-2) + '/' + ("0" + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
+    }
+</script>
