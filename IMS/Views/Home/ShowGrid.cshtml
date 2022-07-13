@@ -49,6 +49,8 @@
                         <th>UnitWT</th>
                         <th>Is Loaded</th>
                         <th>Vehicle</th>
+                        <th>Load Date</th>
+                        <th>Approved By</th>
                     </tr>
                 </thead>
             </table>
@@ -115,7 +117,9 @@
                         return data == true?"Yes":"No";
                     }
                 },
-                { "data": "VehicleNo", "name": "VehicleNo", "autoWidth": true }
+                { "data": "VehicleNo", "name": "VehicleNo", "autoWidth": true },
+                { "data": "ApprovedOn", "name": "ApprovedOn", "autoWidth": true },
+                { "data": "ApprovedBy", "name": "ApprovedBy", "autoWidth": true }
             ]
         });
     });

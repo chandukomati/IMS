@@ -13,6 +13,28 @@
     }
 }
 
+<style>
+    .font18 {
+        font-size:18px;
+    }
+
+    .fa-project {
+        color: #4e73df !important;
+    }
+
+    .fa-role {
+        color: #1cc88a !important;
+    }
+
+    .fa-dispatch {
+        color: #36b9cc !important;
+    }
+
+    .fa-qrscan {
+        color: #f6c23e !important;
+    }
+</style>
+
 <input type="hidden" id="hdnRoleId" name="hdnRoleId" value="0">
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -30,14 +52,14 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             <a class="nav-link" href="@Url.Action("Index", "Home")">
-                                <span>Projects</span>
+                                <span class="font18">Projects</span>
                             </a>
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                         @*<div class="h5 mb-0 font-weight-bold text-gray-800">@(ViewBag.Projects)</div>*@
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-bookmark fa-2x text-gray-300"></i>
+                        <i class="fas fa-bookmark fa-2x text-gray-300 fa-project"></i>
                     </div>
                 </div>
             </div>
@@ -54,14 +76,14 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 <a class="nav-link" href="@Url.Action("RoleMaster", "Home")">
-                                    <span>Role Master</span>
+                                    <span class="font18">Role Master</span>
                                 </a>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                             @*<div class="h5 mb-0 font-weight-bold text-gray-800">@(ViewBag.Vehicles)</div>*@
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-truck fa-2x text-gray-300"></i>
+                            <i class="fas fa-user fa-2x text-gray-300 fa-role"></i>
                         </div>
                     </div>
                 </div>
@@ -77,7 +99,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                             <a class="nav-link" href="@Url.Action("Index", "ScanQRCode")">
-                                <span>Dispatch</span>
+                                <span class="font18">Dispatch</span>
                             </a>
                         </div>
                         <div class="row no-gutters align-items-center">
@@ -92,7 +114,7 @@
                         </div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-qrcode fa-2x text-gray-300"></i>
+                        <i class="fas fa-qrcode fa-2x text-gray-300 fa-dispatch"></i>
                     </div>
                 </div>
             </div>
@@ -107,13 +129,13 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             <a class="nav-link" href="@Url.Action("ItemScanner", "ScanQRCode")">
-                                <span>QR Scan</span>
+                                <span class="font18">QR Scan</span>
                             </a>
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                     </div>
                     <div class="col-auto">
-                        <i class="fas fa-qrcode fa-2x text-gray-300"></i>
+                        <i class="fas fa-qrcode fa-2x text-gray-300 fa-qrscan"></i>
                     </div>
                 </div>
             </div>

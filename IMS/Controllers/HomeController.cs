@@ -304,6 +304,12 @@ namespace IMS.Controllers
                         objResponseMsg.Value = "Vehicle Already Exit!";
                         return Json(objResponseMsg, JsonRequestBehavior.AllowGet);
                     }
+                    else if (db.tblVehicles.Any(x => x.VehicleNo.ToLower() == Vehicle.ToLower()))
+                    {
+                        objResponseMsg.Key = false;
+                        objResponseMsg.Value = "Please Kindly Remove From Primary Project. ";
+                        return Json(objResponseMsg, JsonRequestBehavior.AllowGet);
+                    }
 
                     objVehicles = new tblVehicle();
                     objVehicles.ProjectID = PID;
@@ -403,12 +409,25 @@ namespace IMS.Controllers
                 var length = 1000;
                 int pageSize = Convert.ToInt32(length);
                 int recordsTotal = 0;
-                var list = db.tblTGBuxars.Where(x => x.ProjectId == ProjectId && x.IsActive == true).ToList();
+                var list = db.tblTGBuxars
+                    .Where(x => x.ProjectId == ProjectId && x.IsActive == true)
+                    .ToList()
+                    .Select(x=> new {
+                        DrawingNo = x.DrawingNo,
+                        MarkNo = x.MarkNo,
+                        Batch = x.Batch,
+                        PartSerialNo = x.PartSerialNo,
+                        UnitWT =x.UnitWT,
+                        IsApprove = x.IsApprove,
+                        VehicleNo =x.VehicleNo,
+                        ApprovedBy = x.ApprovedBy,
+                        ApprovedOn = Convert.ToString(x.ApprovedOn),
+                    }).ToList();
                 recordsTotal = list.Count();
                 var data = list.Take(pageSize).ToList();
                 return Json(new { recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -471,13 +490,15 @@ namespace IMS.Controllers
         {
             int ProjectId = Convert.ToInt32(formCollection["hdnProject"]);
             DataTable dt = new DataTable("Grid");
-            dt.Columns.AddRange(new DataColumn[7] { new DataColumn("DrawingNo"), new DataColumn("MarkNo"), new DataColumn("Batch"), new DataColumn("PartSerialNo"), new DataColumn("UnitWT"), new DataColumn("IsLoaded"), new DataColumn("VehicleNo") });
+            dt.Columns.AddRange(new DataColumn[9] { new DataColumn("Drawing No"), new DataColumn("Mark No"), new DataColumn("Batch")
+                , new DataColumn("Part Serial No"), new DataColumn("UnitWT"), new DataColumn("Is Loaded"), new DataColumn("Vehicle No")
+                , new DataColumn("Load Date"), new DataColumn("Approved By")});
 
             var list = db.tblTGBuxars.Where(x => x.ProjectId == ProjectId && x.IsActive == true).ToList();
 
             foreach (var item in list)
             {
-                dt.Rows.Add(item.DrawingNo, item.MarkNo, item.Batch, item.PartSerialNo, item.UnitWT, item.IsApprove==true?"Yes":"No", item.VehicleNo);
+                dt.Rows.Add(item.DrawingNo, item.MarkNo, item.Batch, item.PartSerialNo, item.UnitWT, item.IsApprove==true?"Yes":"No", item.VehicleNo, Convert.ToString(item.ApprovedOn), item.ApprovedBy);
             }
 
             using (XLWorkbook wb = new XLWorkbook())
