@@ -712,7 +712,7 @@ namespace IMS.Controllers
 
         #endregion
 
-        #region Classes
+        #region Methods
 
         public DataTable AddImportedData(DataTable dt, string PsNo, out List<string> errorStrMsg, int projectID, out string MSG)
         {
