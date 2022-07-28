@@ -16,24 +16,29 @@
         .pad40 {
             padding: 40px;
         }
+
     }
 </style>
 
 <div class="card shadow mb-4">
     <div class="card-header py-4">
-        <h6 class="m-0 font-weight-bold text-primary pad40">Import Data</h6>
+        <h6 class="m-0 font-weight-bold text-primary pad40">Import</h6>
         @if (rolename == PMG)
         {
             <b><span style="float: right; margin: 20px 0px -20px -200px;">@ViewBag.datetime</span></b>
-            <button type="button" id="btnOpen" data-toggle="modal" data-target="#FormModel" style="float: right; margin-top: -30px;"
-                    class="btn btn-success">
-                UploadedFile
-            </button>
-            using (Html.BeginForm("Export", "Home", FormMethod.Post))
-            {
+            <a href="~/Resources/IMS_Template.xlsx" style="float: right; margin-top: -30px; margin-right: 10px;" id="btnDownloadTemplate" class="btn btn-success">
+                <i class="fa fa-download" title="Template"></i>
+            </a>
+            <form action="/Home/Export" method="post">
                 <input type="hidden" id="hdnProject" name="hdnProject" value="@ViewBag.Project">
-                <input type="submit" class="btn btn-success" style="float: right; margin-top: -30px; margin-right:10px;" value="Export to Excel" />
-            }
+                <button type="submit" class="btn btn-success" style="float: right; margin-top: -30px; margin-right:10px;">
+                    <i class="fa fa-download"></i> Export
+                </button>
+            </form>
+            <button type="button" id="btnOpen" data-toggle="modal" data-target="#FormModel" style="float: right; margin-top: -30px; margin-right: 10px;" class="btn btn-success">
+                <i class="fa fa-file-excel"></i> Import
+            </button>
+
         }
     </div>
 
@@ -72,19 +77,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    @using (Html.BeginForm("Upload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    @using (Ajax.BeginForm("Upload", "Home", new { }, new AjaxOptions { HttpMethod = "POST", OnBegin = "funBeginImportExcel", OnSuccess = "OnSuccessFileUpload" }, new { enctype = "multipart/form-data", id = "uploadForm" }))
                     {
                         <input type="hidden" id="hdnProject" name="hdnProject" value="@ViewBag.Project">
                         <div class="row">
                             <div class="col-md-6">
-                                <input type="file" name="UploadedFile">
+                                <input type="file" name="file">
                             </div>
                         </div>
-                        <br/>
+                        <br />
                         <div class="row">
-                            <div class="col-md-6">
-                                <input type="submit" name="Submit" class="btn btn-success" value="Submit">
-                            </div>
+                            <input type="submit" name="btnUpload" class="btn btn-success" style="margin-left: 10px;" value="Upload">
+                            <button type="button" id="close" class="btn btn-danger" style="margin-left: 10px;"> Close </button>
                         </div>
                     }
                     <hr />
@@ -122,5 +126,34 @@
                 { "data": "ApprovedBy", "name": "ApprovedBy", "autoWidth": true }
             ]
         });
+
+        $("#close").click(function () {
+            $('#FormModel').trigger('click.dismiss.bs.modal')
+        });
     });
+
+    OnSuccessFileUpload = function (data) {
+        debugger;
+        if (data.Status) {
+            if (data.IsSwal) {
+                toastr.success(data.Msg);
+                /*DisplayNotiMessage("success", data.Msg, "Success");*/
+                window.location.reload(true)
+            }
+        }
+        else {
+            if (data.File != null) {
+                window.location =  '/Home/Download?file=' + data.File;
+            }
+            else {
+                toastr.error(data.Msg);
+                /*DisplayNotiMessage("error", data.Msg, "Error");*/
+            }
+        }
+        $("#upload").val('');
+    }
+
+    funBeginImportExcel = function (data) {
+        debugger;
+    };
 </script>
