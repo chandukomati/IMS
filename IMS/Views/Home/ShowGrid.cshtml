@@ -133,7 +133,7 @@
     });
 
     OnSuccessFileUpload = function (data) {
-        debugger;
+        //debugger;
         if (data.Status) {
             if (data.IsSwal) {
                 toastr.success(data.Msg);
@@ -143,7 +143,9 @@
         }
         else {
             if (data.File != null) {
-                window.location =  '/Home/Download?file=' + data.File;
+                window.location = '/Home/Download?file=' + data.File;
+                $('#FormModel').trigger('click.dismiss.bs.modal');
+                toastr.error(data.Msg);
             }
             else {
                 toastr.error(data.Msg);
@@ -154,6 +156,6 @@
     }
 
     funBeginImportExcel = function (data) {
-        debugger;
+        //debugger;
     };
 </script>

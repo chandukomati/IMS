@@ -448,7 +448,6 @@ namespace IMS.Controllers
             return File(fullPath, "application/vnd.ms-excel", Path.GetFileName(fullPath));
         }
 
-
         [HttpPost]
         public ActionResult Upload(HttpPostedFileBase file)
         {
@@ -461,7 +460,7 @@ namespace IMS.Controllers
             DataTable dtCloned = null;
             List<string> lstdtLines = new List<string>();
             string UploadFilePath = "~/Resources/Projects";
-            
+
             if (file == null)
             {
                 return Json(new { Status = false, Msg = CommonMessages.NoFile.ToString() }, JsonRequestBehavior.AllowGet);
@@ -718,10 +717,10 @@ namespace IMS.Controllers
         {
             MSG = "";
             errorStrMsg = new List<string>();
-            
+
             try
             {
-                string DrawingNo = null, MarkNo = null, Batch = null, PartSerialNo = null, UnitWT = null;
+                List<TGBuxar> lstTGBuxar = new List<TGBuxar>();
 
                 bool flag = false;
 
@@ -729,9 +728,11 @@ namespace IMS.Controllers
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
+                    TGBuxar objTGBuxar = new TGBuxar();
+
                     if (dt.Rows[i]["DrawingNo"].ToString() != null && (!string.IsNullOrEmpty(dt.Rows[i]["DrawingNo"].ToString())))
                     {
-                        DrawingNo = dt.Rows[i]["DrawingNo"].ToString();
+                        objTGBuxar.DrawingNo = dt.Rows[i]["DrawingNo"].ToString();
                     }
                     else
                     {
@@ -742,7 +743,7 @@ namespace IMS.Controllers
 
                     if (dt.Rows[i]["MarkNo"].ToString() != null && (!string.IsNullOrEmpty(dt.Rows[i]["MarkNo"].ToString())))
                     {
-                        MarkNo = dt.Rows[i]["MarkNo"].ToString();
+                        objTGBuxar.MarkNo = dt.Rows[i]["MarkNo"].ToString();
                     }
                     else
                     {
@@ -753,7 +754,28 @@ namespace IMS.Controllers
 
                     if (dt.Rows[i]["Batch"].ToString() != null && (!string.IsNullOrEmpty(dt.Rows[i]["Batch"].ToString())))
                     {
-                        Batch = dt.Rows[i]["Batch"].ToString();
+                        objTGBuxar.Batch = dt.Rows[i]["Batch"].ToString();
+
+                        if (lstTGBuxar.Any(x => x.Batch == objTGBuxar.Batch))
+                        {
+                            errorStrMsg.Add("Batch No Already Exists");
+                            dt.Rows[i]["Error"] += "Batch No Already Exists | ";
+                            flag = true;
+                        }
+                        else if (db.tblTGBuxars.Any(x => x.IsActive == true && x.Batch == objTGBuxar.Batch && x.ProjectId != projectID))
+                        {
+                            var obj = (from proj in db.tblProjects
+                                       join tg in db.tblTGBuxars on proj.ID equals tg.ProjectId
+                                       where tg.IsActive == true && tg.Batch == objTGBuxar.Batch && tg.ID != projectID
+                                       select new { Project = proj.Project }).FirstOrDefault();
+
+                            if (obj != null)
+                            {
+                                errorStrMsg.Add("Batch No Already Exists in " + obj.Project);
+                                dt.Rows[i]["Error"] += "Batch No Already Exists in " + obj.Project + " Project | ";
+                                flag = true;
+                            }
+                        }
                     }
                     else
                     {
@@ -764,7 +786,7 @@ namespace IMS.Controllers
 
                     if (dt.Rows[i]["PartSerialNo"].ToString() != null && (!string.IsNullOrEmpty(dt.Rows[i]["PartSerialNo"].ToString())))
                     {
-                        PartSerialNo = dt.Rows[i]["PartSerialNo"].ToString();
+                        objTGBuxar.PartSerialNo = dt.Rows[i]["PartSerialNo"].ToString();
                     }
                     else
                     {
@@ -775,7 +797,7 @@ namespace IMS.Controllers
 
                     if (dt.Rows[i]["UnitWT"].ToString() != null && (!string.IsNullOrEmpty(dt.Rows[i]["UnitWT"].ToString())))
                     {
-                        UnitWT = dt.Rows[i]["UnitWT"].ToString();
+                        objTGBuxar.UnitWT = dt.Rows[i]["UnitWT"].ToString();
                     }
                     else
                     {
@@ -783,7 +805,7 @@ namespace IMS.Controllers
                         dt.Rows[i]["Error"] += "UnitWT is required | ";
                         flag = true;
                     }
-
+                    lstTGBuxar.Add(objTGBuxar);
                 }
 
                 #endregion
@@ -792,15 +814,15 @@ namespace IMS.Controllers
                 {
                     List<tblTGBuxar> usersList = new List<tblTGBuxar>();
 
-                    for (int i = 0; i < dt.Rows.Count; i++)
+                    for (int i = 0; i < lstTGBuxar.Count; i++)
                     {
                         tblTGBuxar _tg = new tblTGBuxar();
 
-                        _tg.DrawingNo = DrawingNo;
-                        _tg.MarkNo = MarkNo;
-                        _tg.Batch = Batch;
-                        _tg.PartSerialNo = PartSerialNo;
-                        _tg.UnitWT = UnitWT;
+                        _tg.DrawingNo = lstTGBuxar[i].DrawingNo;
+                        _tg.MarkNo = lstTGBuxar[i].MarkNo;
+                        _tg.Batch = lstTGBuxar[i].Batch;
+                        _tg.PartSerialNo = lstTGBuxar[i].PartSerialNo;
+                        _tg.UnitWT = lstTGBuxar[i].UnitWT;
                         _tg.IsActive = true;
                         _tg.ProjectId = projectID;
                         _tg.CreatedBy = objClsLoginInfo.UserName;
@@ -835,6 +857,16 @@ namespace IMS.Controllers
     }
 
     #region Classes
+
+    public partial class TGBuxar
+    {
+        public string DrawingNo { get; set; }
+        public string MarkNo { get; set; }
+        public string Batch { get; set; }
+        public string PartSerialNo { get; set; }
+        public string UnitWT { get; set; }
+
+    }
 
     public class RoleResponseMsg
     {
