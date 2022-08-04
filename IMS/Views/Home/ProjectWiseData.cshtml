@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewBag.Title = "Project Wise Data";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="">
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="inputEmail4">Project</label>
+                        @Html.DropDownList("txtProject", new SelectList(ViewBag.Project), "Select Project", new { id = "txtProject", @class = "form-control require" })
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputPassword4">From Date</label>
+                        <input type="text" class="form-control datepicker" id="FromDate" placeholder="From Date">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="inputPassword4">To Date</label>
+                        <input type="text" class="form-control datepicker" id="ToDate" placeholder="To Date">
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label for="inputPassword4"> &nbsp; </label>
+                        @*<button type="button" id="btnSearch" class="btn btn-primary">Search</button>*@
+                        <input type="button" class="btn btn-primary form-control" id="btnSearch" value="Search">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-4">
+        <h6 class="m-0 font-weight-bold text-primary">Report</h6>
+    </div>
+    <div class="card-body">
+        <div id="reportgrid">
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+
+    $('.datepicker').datepicker({
+        dateFormat: 'dd/mm/yy',
+        startDate: '-3d'
+    });
+
+    $("#btnSearch").click(function () {
+        
+        var proj = $("#txtProject").val();
+        var f_date = $("#FromDate").val();
+        var t_date = $("#ToDate").val();
+        if (proj) {
+            $("#txtProject").removeClass("iserror");
+        }
+        else {
+            $("#txtProject").addClass("iserror");
+            toastr.warning("Please Select Project ");
+            return
+        }
+        if (f_date != '' && t_date != '') {
+            $("#FromDate").removeClass("iserror");
+            $("#ToDate").removeClass("iserror");
+            console.log(proj + " - " + f_date + " - " + t_date);
+        }
+        else {
+            $("#FromDate").addClass("iserror");
+            $("#ToDate").addClass("iserror");
+            toastr.warning("Please Select From and To Date");
+        }
+    });
+
+</script>

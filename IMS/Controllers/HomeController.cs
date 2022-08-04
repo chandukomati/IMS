@@ -854,6 +854,17 @@ namespace IMS.Controllers
         }
 
         #endregion
+
+        #region ProjectWiseData
+
+        [SessionExpireFilter]
+        public ActionResult ProjectWiseData()
+        {
+            ViewBag.Project = db.tblProjects.Select(x => x.Project).ToList();
+            return View();
+        }
+
+        #endregion
     }
 
     #region Classes
