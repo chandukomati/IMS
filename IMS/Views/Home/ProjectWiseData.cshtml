@@ -11,7 +11,7 @@
                 <div class="form-row">
                     <div class="form-group col-md-3">
                         <label for="inputEmail4">Project</label>
-                        @Html.DropDownList("txtProject", new SelectList(ViewBag.Project), "Select Project", new { id = "txtProject", @class = "form-control require" })
+                        @Html.DropDownList("txtProject", new SelectList(ViewBag.Project, "Value", "Text"), "Select Project", new { id = "txtProject", @class = "form-control require" })
                     </div>
                     <div class="form-group col-md-3">
                         <label for="inputPassword4">From Date</label>
@@ -23,7 +23,6 @@
                     </div>
                     <div class="form-group col-md-1">
                         <label for="inputPassword4"> &nbsp; </label>
-                        @*<button type="button" id="btnSearch" class="btn btn-primary">Search</button>*@
                         <input type="button" class="btn btn-primary form-control" id="btnSearch" value="Search">
                     </div>
                 </div>
@@ -32,19 +31,8 @@
     </div>
 </div>
 
-<div class="card shadow mb-4">
-    <div class="card-header py-4">
-        <h6 class="m-0 font-weight-bold text-primary">Report</h6>
-    </div>
-    <div class="card-body">
-        <div id="reportgrid">
-            
-        </div>
-    </div>
-</div>
 
-
-
+<div id="reportgrid"></div>
 
 
 <script type="text/javascript">
@@ -56,26 +44,50 @@
 
     $("#btnSearch").click(function () {
         
-        var proj = $("#txtProject").val();
+        var valid = true;
+
+        var proj_id = $("#txtProject").val();
         var f_date = $("#FromDate").val();
         var t_date = $("#ToDate").val();
-        if (proj) {
+        if (proj_id) {
             $("#txtProject").removeClass("iserror");
         }
         else {
             $("#txtProject").addClass("iserror");
-            toastr.warning("Please Select Project ");
-            return
+            valid = false;
         }
-        if (f_date != '' && t_date != '') {
+
+        if (f_date) {
             $("#FromDate").removeClass("iserror");
-            $("#ToDate").removeClass("iserror");
-            console.log(proj + " - " + f_date + " - " + t_date);
         }
         else {
             $("#FromDate").addClass("iserror");
+            valid = false;
+        }
+
+        if (t_date) {
+            $("#ToDate").removeClass("iserror");
+        }
+        else {
             $("#ToDate").addClass("iserror");
-            toastr.warning("Please Select From and To Date");
+            valid = false;
+        }
+
+        if (valid) {
+            $("#reportgrid").html('');
+            $.ajax({
+                url: '@Url.Action("GetData", "Home")',
+                data: { ProjectId: proj_id, FromDate: f_date, ToDate: t_date },
+                dataType: "html",
+                type: "GET",
+                contentType: "application/json; charset=ut-8",
+                async: true,
+                success: function (result) {
+                    $("#reportgrid").html(result);
+                },
+                error: function (xhr) {
+                }
+            });
         }
     });
 

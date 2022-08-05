@@ -860,9 +860,89 @@ namespace IMS.Controllers
         [SessionExpireFilter]
         public ActionResult ProjectWiseData()
         {
-            ViewBag.Project = db.tblProjects.Select(x => x.Project).ToList();
+            ViewBag.Project = db.tblProjects.Select(a =>
+                                  new SelectListItem
+                                  {
+                                      Value = a.ID.ToString(),
+                                      Text = a.Project
+                                  }).ToList();
             return View();
         }
+
+        public ActionResult GetData(int ProjectId, string FromDate, string ToDate)
+        {
+            ViewBag.FromDate = FromDate;
+            ViewBag.ToDate = ToDate;
+            ViewBag.Project = ProjectId;
+            return PartialView("_GetData");
+        }
+
+        public ActionResult GetDataLoadGrid(int ProjectId, string FromDate, string ToDate)
+        {
+            DateTime fromdate = Convert.ToDateTime(FromDate);
+            DateTime todate = Convert.ToDateTime(ToDate);
+
+            try
+            {
+                var length = 1000;
+                int pageSize = Convert.ToInt32(length);
+                int recordsTotal = 0;
+                var list = db.tblTGBuxars
+                    .Where(x => x.ProjectId == ProjectId && x.IsActive == true && x.ApprovedOn >= fromdate && x.ApprovedOn <= todate)
+                    .ToList()
+                    .Select(x => new
+                    {
+                        DrawingNo = x.DrawingNo,
+                        MarkNo = x.MarkNo,
+                        Batch = x.Batch,
+                        PartSerialNo = x.PartSerialNo,
+                        UnitWT = x.UnitWT,
+                        IsApprove = x.IsApprove,
+                        VehicleNo = x.VehicleNo,
+                        ApprovedBy = x.ApprovedBy,
+                        ApprovedOn = Convert.ToString(x.ApprovedOn),
+                    }).ToList();
+                recordsTotal = list.Count();
+                var data = list.Take(pageSize).ToList();
+                return Json(new { recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public FileResult GetDataExport(FormCollection formCollection)
+        {
+            int ProjectId = Convert.ToInt32(formCollection["hdnProject"]);
+            DateTime fromdate = Convert.ToDateTime(formCollection["hdnfromdate"]);
+            DateTime todate = Convert.ToDateTime(formCollection["hdntodate"]);
+            DataTable dt = new DataTable("Grid");
+            dt.Columns.AddRange(new DataColumn[9] { new DataColumn("Drawing No"), new DataColumn("Mark No"), new DataColumn("Batch")
+                , new DataColumn("Part Serial No"), new DataColumn("UnitWT"), new DataColumn("Is Loaded"), new DataColumn("Vehicle No")
+                , new DataColumn("Load Date"), new DataColumn("Approved By")});
+
+            var list = db.tblTGBuxars
+                .Where(x => x.ProjectId == ProjectId && x.IsActive == true && x.ApprovedOn >= fromdate && x.ApprovedOn <= todate)
+                .ToList();
+
+            foreach (var item in list)
+            {
+                dt.Rows.Add(item.DrawingNo, item.MarkNo, item.Batch, item.PartSerialNo, item.UnitWT, item.IsApprove == true ? "Yes" : "No", item.VehicleNo, Convert.ToString(item.ApprovedOn), item.ApprovedBy);
+            }
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+        }
+
 
         #endregion
     }

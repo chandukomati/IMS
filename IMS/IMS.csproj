@@ -2194,6 +2194,7 @@
     <Content Include="Views\ScanQRCode\OpenQRScanner.cshtml" />
     <Content Include="Views\ScanQRCode\ItemScanner.cshtml" />
     <Content Include="Views\Home\ProjectWiseData.cshtml" />
+    <Content Include="Views\Home\_GetData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
