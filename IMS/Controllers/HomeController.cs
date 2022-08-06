@@ -880,7 +880,7 @@ namespace IMS.Controllers
         public ActionResult GetDataLoadGrid(int ProjectId, string FromDate, string ToDate)
         {
             DateTime fromdate = Convert.ToDateTime(FromDate);
-            DateTime todate = Convert.ToDateTime(ToDate);
+            DateTime todate = Convert.ToDateTime(ToDate).AddHours(23).AddMinutes(59).AddSeconds(59);
 
             try
             {
@@ -888,7 +888,7 @@ namespace IMS.Controllers
                 int pageSize = Convert.ToInt32(length);
                 int recordsTotal = 0;
                 var list = db.tblTGBuxars
-                    .Where(x => x.ProjectId == ProjectId && x.IsActive == true && x.ApprovedOn >= fromdate && x.ApprovedOn <= todate)
+                    .Where(x => x.ProjectId == ProjectId && x.ApprovedOn >= fromdate && x.ApprovedOn <= todate)
                     .ToList()
                     .Select(x => new
                     {
@@ -917,14 +917,14 @@ namespace IMS.Controllers
         {
             int ProjectId = Convert.ToInt32(formCollection["hdnProject"]);
             DateTime fromdate = Convert.ToDateTime(formCollection["hdnfromdate"]);
-            DateTime todate = Convert.ToDateTime(formCollection["hdntodate"]);
+            DateTime todate = Convert.ToDateTime(formCollection["hdntodate"]).AddHours(23).AddMinutes(59).AddSeconds(59); ;
             DataTable dt = new DataTable("Grid");
             dt.Columns.AddRange(new DataColumn[9] { new DataColumn("Drawing No"), new DataColumn("Mark No"), new DataColumn("Batch")
                 , new DataColumn("Part Serial No"), new DataColumn("UnitWT"), new DataColumn("Is Loaded"), new DataColumn("Vehicle No")
                 , new DataColumn("Load Date"), new DataColumn("Approved By")});
 
             var list = db.tblTGBuxars
-                .Where(x => x.ProjectId == ProjectId && x.IsActive == true && x.ApprovedOn >= fromdate && x.ApprovedOn <= todate)
+                .Where(x => x.ProjectId == ProjectId && x.ApprovedOn >= fromdate && x.ApprovedOn <= todate)
                 .ToList();
 
             foreach (var item in list)

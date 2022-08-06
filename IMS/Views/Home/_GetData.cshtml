@@ -2,6 +2,20 @@
     ViewBag.Title = "ShowGrid";
 }
 
+<style>
+    @@media screen and (max-width: 600px) {
+        div.dataTables_wrapper div.dataTables_length, div.dataTables_wrapper div.dataTables_filter, div.dataTables_wrapper div.dataTables_info, div.dataTables_wrapper div.dataTables_paginate {
+            font-size: 8px;
+        }
+
+        #ImportGrid {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+        }
+    }
+</style>
+
 <div class="card shadow mb-4">
     <div class="card-header py-4">
         <h6 class="m-0 font-weight-bold text-primary">Report</h6>
