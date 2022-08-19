@@ -34,6 +34,7 @@ namespace IMS.Controllers
             ViewBag.VehicleNo = VehicleNo;
             return View();
         }
+
         [SessionExpireFilter]
         public ActionResult QRCodeResult(string Proj, string VNo, string text)
         {
@@ -53,6 +54,7 @@ namespace IMS.Controllers
             ViewBag.Item = text;
             return View("Index");
         }
+
         [HttpPost]
         public JsonResult GetProjectItemDetails(string Project ,string Item)
         {
@@ -69,6 +71,7 @@ namespace IMS.Controllers
             }
             return Json(objresponse, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public JsonResult LoadProjectItemDetails(string markNo, string batch, string vehicleNo)
         {
@@ -104,6 +107,7 @@ namespace IMS.Controllers
             }
             return Json(objresponse, JsonRequestBehavior.AllowGet);
         }
+
         public class ItemResponseMsg
         {
             public ItemResponseMsg()
@@ -113,6 +117,7 @@ namespace IMS.Controllers
             public bool Key;
             public tblTGBuxar data;
         }
+
         public class VehicleResponseMsg
         {
             public VehicleResponseMsg()
@@ -122,20 +127,24 @@ namespace IMS.Controllers
             public bool Key;
             public List<tblVehicle> data;
         }
+
         #endregion
 
-        #region Only Scan Item      
+        #region Only Scan Item
+        
         [SessionExpireFilter]
         public ActionResult ItemScanner()
         {
             return View();
         }
+
         [SessionExpireFilter]
         public ActionResult ItemQRCodeResult(string text)
         {
             ViewBag.Item = text;
             return View("ItemScanner");
         }
+
         [HttpPost]
         public JsonResult GetItemDetails(string Item)
         {
