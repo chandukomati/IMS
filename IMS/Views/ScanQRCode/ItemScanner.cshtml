@@ -11,13 +11,13 @@
     <div class="card-body">
         <div>
             <div class="row">
-                <div class="col-lg-2">
+                <div class="col-lg-2 mb-4">
                     <span class="CustomLabel">Scan Item</span>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6 mb-4">
                     @Html.TextBox("txtItemNo", null, new { id = "txtItemNo", @class = "form-control" })
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-4 mb-4">
                     <button type="button" id="btnOpen" class="btn btn-success" onclick="ScanQRCode()">
                         <span class="glyphicon glyphicon-qrcode"></span> Item Scan
                     </button>

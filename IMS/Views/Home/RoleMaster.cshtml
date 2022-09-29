@@ -51,8 +51,8 @@
                                 <td class="name">@Html.DisplayFor(modelItem => item.UserName)</td>
                                 <td class="name">@Html.DisplayFor(modelItem => item.Role)</td>
                                 <td>
-                                    <a class="" onclick="deleterole(@item.RoleId)"><spam class="fas fa-trash"></spam></a>
-                                    <a class="" data-toggle="modal" data-target="#FormModel" onclick="EditRole(@item.RoleId)"><spam class="fas fa-edit"></spam></a>
+                                    <a class="btn btn-danger btn-circle btn-sm" onclick="deleterole(@item.RoleId)"><spam class="fas fa-trash"></spam></a>
+                                    <a class="btn btn-success btn-circle btn-sm" data-toggle="modal" data-target="#FormModel" onclick="EditRole(@item.RoleId)"><spam class="fas fa-edit"></spam></a>
                                 </td>
                             </tr>
                         }

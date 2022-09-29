@@ -26,10 +26,10 @@
     <meta property="og:type" content="website" />
 
     @*<script type="text/javascript">
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
-    </script>*@
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js');
+            }
+        </script>*@
     <link href="~/Scripts/QRCodeScanner/lib/dialog-polyfill/dialog-polyfill.css" rel="stylesheet" />
     <link href="~/Scripts/QRCodeScanner/lib/material-design-lite/material.min.css" rel="stylesheet" />
 
@@ -130,53 +130,48 @@
 
 @using (@Html.BeginForm("", "", FormMethod.Post, new { id = "" }))
 {
-<body>
-    @*<span id="Project">@ViewBag.Project</span>
-    <span id="VehicleNo">@ViewBag.VehicleNo</span>*@
-    <input id="Project" style="display:none;" value="@ViewBag.Project" />
-    <input id="VehicleNo" style="display:none;" value="@ViewBag.VehicleNo" />
-    <div id="loading" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+    <body>
+        @*<span id="Project">@ViewBag.Project</span>
+            <span id="VehicleNo">@ViewBag.VehicleNo</span>*@
+        <input id="Project" style="display:none;" value="@ViewBag.Project" />
+        <input id="VehicleNo" style="display:none;" value="@ViewBag.VehicleNo" />
+        <div id="loading" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
 
-    <video id="camera" autoplay>You need a camera in order to use this app.</video>
-    <div id="snapshotLimitOverlay">
-        <div id="about">
-            <h4>QR Code Scanner</h4>
-            <p>
-                You'll need at least a camera and a compatible browser.<br />
-            </p>
+        <video id="camera" autoplay>You need a camera in order to use this app.</video>
+        <div id="snapshotLimitOverlay">
+            <div id="about">
+                <h4>QR Code Scanner</h4>
+                <p>
+                    You'll need at least a camera and a compatible browser.<br />
+                </p>
+            </div>
         </div>
-    </div>
-    <canvas id="snapshot"></canvas>
-    <button id="flipCamera" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Flip Camera</button>
-    @*<a id="aboutButton" type="button" href="https://github.com/Minishlink/pwa-qr-code-scanner" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" hidden>About</a>*@
+        <canvas id="snapshot"></canvas>
+        <button id="flipCamera" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Flip Camera</button>
+        @*<a id="aboutButton" type="button" href="https://github.com/Minishlink/pwa-qr-code-scanner" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" hidden>About</a>*@
 
-    <dialog class="mdl-dialog" style="display:none">
-        <h4 class="mdl-dialog__title">Your text</h4>
-        <div class="mdl-dialog__content">
-            <p id="resultsContainer">
-                @*RESULT*@
-                <span id="result"></span>
-            </p>
-            <p>
+        <dialog class="mdl-dialog" style="display:none">
+            <h4 class="mdl-dialog__title">Your text</h4>
+            <div class="mdl-dialog__content">
+                <p id="resultsContainer">
+                    <span id="result"></span>
+                </p>
+                <p>
+                    <button type="button" class="copy mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised" data-clipboard-target="#result">
+                        Copy
+                    </button>
+                    <a class="search mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised">
+                        Search
+                    </a>
+                </p>
+            </div>
 
-                <button type="button" class="copy mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised" data-clipboard-target="#result">
-                    Copy
+            <div class="mdl-dialog__actions">
+                <button type="button" class="continue mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
+                    Continue
                 </button>
-                <a class="search mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised">
-                    Search
-                </a>
-            </p>
-        </div>
-
-        <div class="mdl-dialog__actions">
-            <button type="button" class="continue mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--raised mdl-button--colored">
-                Continue
-            </button>
-        </div>
-
-
-    </dialog>
-
-</body>
+            </div>
+        </dialog>
+    </body>
 }
 </html>

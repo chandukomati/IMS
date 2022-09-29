@@ -11,19 +11,19 @@
     <div class="card-body">
         <div class="">
             <div class="row">
-                <div class="col-lg-1">
+                <div class="col-lg-1 mb-4">
                     <span class="CustomLabel">Project</span>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-3 mb-4">
                     @Html.DropDownList("txtProject", new SelectList(ViewBag.Project), "Select Project", new { id = "txtProject", @class = "form-control require", @onchange = "GetVehicleByProject()" })
                 </div>
-                <div class="col-lg-1">
+                <div class="col-lg-1 mb-4">
                     <span class="CustomLabel">Vehicle Number</span>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-lg-3 mb-4">
                     @Html.DropDownList("txtVehicleNo", new SelectList(ViewBag.VehicleNo), "Select Vehicle No", new { id = "txtVehicleNo", @class = "form-control require" })
                 </div>
-                <div class="col-lg-4" style="display:inherit">
+                <div class="col-lg-4 mb-4" style="display:inherit">
                     <div class="col-lg-3">
                         <span class="CustomLabel">Scan Item</span>
                     </div>
